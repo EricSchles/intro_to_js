@@ -24,5 +24,38 @@ function myFunction(x) {
     alert(x);
 }
 </script>
+
+<script>
+//Setting up syncano
+var syncano = SyncanoConnector.getInstance();
+syncano.connect( {instance: 'YOUR-INSTANCE-NAME', api_key: 'YOUR-API-KEY'}, function(auth) {
+  console.log("Connected")
+});
+
+//Saving data
+syncano.Data.new( PROJECT-ID, 'Default', {title: "My title"}, function() {
+  console.log("Saved!")
+});
+
+//Retriving data
+syncano.Data.get( PROJECT-ID, 'Default', {order: 'DESC'}, function(list) {
+  if (list.length) {
+    console.log('Last object: ' + list[0].title);
+  } else {
+    console.log('No stored objects!');
+  }
+});
+
+//subscribe to real-time updates
+syncano.connect( {instance: 'YOUR-INSTANCE-NAME', api_key: 'YOUR-API-KEY'}, function(auth) {
+  syncano.Subscription.subscribeProject(PROJECT-ID, function(result) {
+    console.log("Subscribed");
+  })
+});
+syncano.on('syncano:newdata:project-PROJECT-ID', function(data) {
+  if (data) {
+    console.log('Data: ' + data);
+  }
+});
 </body>
 </html>
